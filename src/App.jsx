@@ -3,7 +3,7 @@ import './App.css';
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { AddProducts } from './AddProducts'; // Change the import statement
 import { Products } from './Products'; // Change the import statement
-import { EditProduct } from './EditProduct'; // Change the import statement
+import { EditProduct } from "./EditProduct"; // Change the import statement
 import { TakeProducts } from './TakeProducts'; // Change the import statement
 import { Navbar } from './Navbar';
 
