@@ -1,207 +1,97 @@
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
-
-
-
 import { useNavigate, useParams } from "react-router-dom";
 
-export function EditBook() {
+export function EditProduct() {
+  const [editProduct, setEditProduct] = useState(null);
+  const { id } = useParams();
 
-const [editbooks,seteditbook] =useState(null);
+  useEffect(() => {
+    fetch(`https://63e0923b65b57fe60644f2ba.mockapi.io/products/${id}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => setEditProduct(data));
+  }, [id]);
 
-  const {id} = useParams()
+  console.log(editProduct);
 
-useEffect(() =>{
-
-  fetch(`https://63e0923b65b57fe60644f2ba.mockapi.io/books/${id}`,{
-    method:"GET"})
-
-  .then((data) => data.json() )
-  .then((data) => seteditbook(data))
-
-
-},[id])
-
-console.log(editbooks);
-
-return (
-
-  editbooks ? <Editbookforms editbooks={editbooks} /> : <h1>Loading....</h1>
-
-)
-
+  return editProduct ? <EditProductForm editProduct={editProduct} /> : <h1>Loading....</h1>;
 }
 
-
-function Editbookforms({editbooks}){
-
-
-
+function EditProductForm({ editProduct }) {
   const navigate = useNavigate();
-
 
   const { handleChange, handleSubmit, values } = useFormik({
     initialValues: {
-      name: editbooks.name,
-      author: editbooks.author,
-      published:editbooks.published,
-      publisher: editbooks.publisher,
-      description: editbooks.description,
-      pages:editbooks.pages,
-      website:editbooks.website,
+      name: editProduct.name,
+      price: editProduct.price,
+      poster: editProduct.poster,
+      category: editProduct.category,
+      rating: editProduct.rating,
+      description: editProduct.description,
     },
-    onSubmit: (editdata) => {
-
-
-      updatafun(editdata);
-
-
-
-    }
+    onSubmit: (editData) => {
+      updateProduct(editData);
+    },
   });
 
-
-
-
-
-  const updatafun = async (editdata)=>{
-
-    await fetch(`https://63e0923b65b57fe60644f2ba.mockapi.io/books/${editbooks.id}`,{
+  const updateProduct = async (editData) => {
+    await fetch(`https://63e0923b65b57fe60644f2ba.mockapi.io/products/${editProduct.id}`, {
       method: "PUT",
-    body: JSON.stringify(editdata)  ,
-    headers: {
-     'Content-Type': 'application/json'
-    },
-    })
+      body: JSON.stringify(editData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-
-navigate("/books")
-
-
-
-
-  }
-
-
-
-
-
-
-
+    navigate("/products");
+  };
 
   return (
-
-
-    <div className="container" >
-
-
-    <div className="row mb-5 mt-5 d-flex text-light justify-content-center   ">
-
-
-    <div className="col-md-6  col-lg-6 col-12">
-    <div className="card bg-secondary ">
-
-
-
-    <h3 className="card-header mb-2 bg-dark text-center">Update Books</h3>   
-    <div className="card-body">
-
-
-
-    <form onSubmit={handleSubmit} >
-
-    <div className="mb-1">
-
-    <label className="form-label">Title Books *</label>
-    <input  className="form-control" value={values.name} name="name" onChange={handleChange} type="text" placeholder="Title" />
-
-
-    </div>
-
-    <div className="mb-1">
-
-    <label className="form-label">Author *</label>
-    <input className="form-control" value={values.author} name="author" onChange={handleChange} type="text" placeholder="author" />
-
-    </div>
-    <div className="mb-1">
-
-    <label className="form-label" >Published *</label>
-    <input  className="form-control" value={values.published} name="published"  onChange={handleChange} type="text" placeholder="published" />
-
-    </div>
-
-    <div className="mb-1">
-
-    <label className="form-label" >Publisher *</label>
-    <input className="form-control" value={values.publisher} name="publisher"  onChange={handleChange} type="text" placeholder="publisher" />
-
-    </div>
-    <div className="mb-1">
-
-    <label className="form-label" >Descriptions *</label>
-    <input className="form-control"  value={values.description} name="description"  onChange={handleChange} type="text" placeholder="description" />
-
-    </div>
-
-
-
-
-{values.website  != "" && values.pages != "" ?   
-  <div>
-    <div className="mb-1">
-
-
-    <label className="form-label" >Pages</label>
-    <input className="form-control" value={values.pages}  name="pages" onChange={handleChange} type="text" placeholder="Pages" />
-    </div>
-<div className="mb-1">
-    <label className="form-label" >website</label>
-    <input className="form-control" value={values.website} name="website"  onChange={handleChange} type="text" placeholder="website" />
-
-    </div>
-    </div> : ""
-
-
-
-
-
-
-}
-    <div className="d-grid mt-3">
-
-    <button className="btn mb-2 btn-success" type="submit" >Update Books</button>
-    <button className="btn btn-danger" onClick={(() => navigate("/books") )}>Cancel</button>
-    </div>
-
-
-    </form>
-    </div>
-
-    </div>
-
-    </div>
-
-
-
-
-
-
-
-
+    <div className="container">
+      <div className="row mb-5 mt-5 d-flex text-light justify-content-center   ">
+        <div className="col-md-6 col-lg-6 col-12">
+          <div className="card bg-secondary ">
+            <h3 className="card-header mb-2 bg-dark text-center">Update Product</h3>
+            <div className="card-body">
+              <form onSubmit={handleSubmit}>
+                <div className="mb-1">
+                  <label className="form-label">Product Name *</label>
+                  <input
+                    className="form-control"
+                    value={values.name}
+                    name="name"
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="Product Name"
+                  />
+                </div>
+                <div className="mb-1">
+                  <label className="form-label">Price *</label>
+                  <input
+                    className="form-control"
+                    value={values.price}
+                    name="price"
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="Price"
+                  />
+                </div>
+                {/* Rest of your input fields */}
+                <div className="d-grid mt-3">
+                  <button className="btn mb-2 btn-success" type="submit">
+                    Update Product
+                  </button>
+                  <button className="btn btn-danger" onClick={() => navigate("/products")}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-
-
-
-
-
         </div>
-
-
-
+      </div>
+    </div>
   );
-
-
-
-
 }
